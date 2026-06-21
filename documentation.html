@@ -55,9 +55,16 @@
           <a href="#setup">Setup Guide</a>
           <a href="#prerequisites">Prerequisites</a>
           <a href="#quick-setup">Quick Setup</a>
+          <a href="#setup-flow">Setup Flow</a>
           <a href="#cli-tools">CLI Tools</a>
+          <a href="#manual-ide">Manual IDE Setup</a>
           <a href="#api-reference">API Reference</a>
+          <a href="#messages">Messages</a>
+          <a href="#models-api">Models Endpoint</a>
+          <a href="#token-counting">Token Counting</a>
+          <a href="#dashboard-auth">Dashboard Auth</a>
           <a href="#models">Available Models</a>
+          <a href="#build-notes">Build Notes</a>
           <a href="#troubleshooting">Troubleshooting</a>
         </nav>
       </aside>
@@ -97,7 +104,7 @@
 
         <section id="quick-setup" class="doc-section">
           <h2>Quick Setup</h2>
-          <p>Run the UnityAI setup wizard, paste your API key, then choose the coding tool you want to configure.</p>
+          <p>Run the UnityAI setup wizard, paste your API key, then choose the client you want to configure.</p>
           <div class="code-card">
             <div class="code-title">Main Command</div>
             <pre><code>npx -y @unityai/cloud-cli@latest</code></pre>
@@ -113,57 +120,198 @@ Fast model: unityai-cloud</code></pre>
           </div>
         </section>
 
+        <section id="setup-flow" class="doc-section">
+          <h2>Interactive Setup Flow</h2>
+          <div class="doc-checklist">
+            <article>
+              <h3>1. Start the wizard</h3>
+              <p>Run the npx command from a terminal where Node.js 18 or newer is available.</p>
+            </article>
+            <article>
+              <h3>2. Paste your API key</h3>
+              <p>The wizard stores the key only in the client configuration selected for that machine.</p>
+            </article>
+            <article>
+              <h3>3. Pick a tool</h3>
+              <p>Select Codex, Claude Code, OpenCode, Cline, Kilo Code, Factory Droid, or a manual setup.</p>
+            </article>
+          </div>
+          <div class="code-card">
+            <div class="code-title">Optional Direct Tool Command</div>
+            <pre><code>npx -y @unityai/cloud-cli@latest configure --tool codex --api-key YOUR_API_KEY</code></pre>
+          </div>
+        </section>
+
         <section id="cli-tools" class="doc-section">
           <h2>CLI Tools</h2>
           <div class="doc-grid">
             <article>
-              <h3>Codex CLI</h3>
-              <p>Use the OpenAI-compatible endpoint and set the model to <code>unityai-cloud</code>.</p>
+              <h3>Claude Code CLI</h3>
+              <p>Use the wizard when possible. For a manual setup, point Claude Code at the Anthropic-compatible URL.</p>
+              <pre><code>npx -y @unityai/cloud-cli@latest configure --tool claude --api-key YOUR_API_KEY</code></pre>
+              <pre><code>{
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "YOUR_API_KEY",
+    "ANTHROPIC_BASE_URL": "https://unityai.cloud/v1",
+    "ANTHROPIC_MODEL": "unityai-cloud"
+  }
+}</code></pre>
+            </article>
+
+            <article>
+              <h3>OpenAI Codex CLI</h3>
+              <p>Codex-compatible clients should use the OpenAI-style base URL and the UnityAI routing model.</p>
+              <pre><code>npx -y @unityai/cloud-cli@latest configure --tool codex --api-key YOUR_API_KEY</code></pre>
               <pre><code>OPENAI_API_KEY=YOUR_API_KEY
 OPENAI_BASE_URL=https://unityai.cloud/api/v1
 MODEL=unityai-cloud</code></pre>
             </article>
+
             <article>
-              <h3>Claude Code</h3>
-              <p>Use the Anthropic-compatible endpoint with the same API key.</p>
-              <pre><code>ANTHROPIC_AUTH_TOKEN=YOUR_API_KEY
-ANTHROPIC_BASE_URL=https://unityai.cloud/v1
-ANTHROPIC_MODEL=unityai-cloud</code></pre>
-            </article>
-            <article>
-              <h3>Cline or Roo Code</h3>
-              <p>Choose Anthropic-compatible mode and point the client to the UnityAI base URL.</p>
+              <h3>OpenCode</h3>
+              <p>Add UnityAI as an Anthropic-compatible provider and list the model IDs you want available.</p>
               <pre><code>{
-  "apiProvider": "anthropic",
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "unityai": {
+      "npm": "@ai-sdk/anthropic",
+      "name": "unityai.cloud",
+      "options": {
+        "baseURL": "https://unityai.cloud/v1",
+        "apiKey": "YOUR_API_KEY"
+      },
+      "models": {
+        "unityai-cloud": { "name": "UnityAI Cloud" },
+        "unityai-fast": { "name": "UnityAI Fast" },
+        "unityai-reasoning": { "name": "UnityAI Reasoning" }
+      }
+    }
+  }
+}</code></pre>
+            </article>
+
+            <article>
+              <h3>Cline</h3>
+              <p>Run the wizard and choose Cline. If needed, use Anthropic-compatible mode manually.</p>
+              <pre><code>npx -y @unityai/cloud-cli@latest configure --tool cline --api-key YOUR_API_KEY</code></pre>
+              <pre><code>{
+  "actModeApiProvider": "anthropic",
+  "planModeApiProvider": "anthropic",
   "anthropicBaseUrl": "https://unityai.cloud/v1",
-  "apiKey": "YOUR_API_KEY"
+  "anthropicModelId": "unityai-cloud",
+  "planModeAnthropicModelId": "unityai-cloud"
+}</code></pre>
+            </article>
+
+            <article>
+              <h3>Kilo Code</h3>
+              <p>Configure Kilo with the Anthropic-compatible UnityAI endpoint and your customer key.</p>
+              <pre><code>npx -y @unityai/cloud-cli@latest configure --tool kilo --api-key YOUR_API_KEY</code></pre>
+              <pre><code>{
+  "anthropic": {
+    "type": "api-key",
+    "apiKey": "YOUR_API_KEY",
+    "baseUrl": "https://unityai.cloud/v1",
+    "model": "unityai-cloud"
+  }
+}</code></pre>
+            </article>
+
+            <article>
+              <h3>Factory Droid</h3>
+              <p>Add a custom Anthropic-compatible model entry when Droid cannot be configured automatically.</p>
+              <pre><code>npx -y @unityai/cloud-cli@latest configure --tool droid --api-key YOUR_API_KEY</code></pre>
+              <pre><code>{
+  "model": "unityai-cloud",
+  "id": "custom:UnityAI-0",
+  "baseUrl": "https://unityai.cloud/v1",
+  "apiKey": "YOUR_API_KEY",
+  "displayName": "UnityAI Cloud",
+  "provider": "anthropic"
 }</code></pre>
             </article>
           </div>
         </section>
 
+        <section id="manual-ide" class="doc-section">
+          <h2>Manual IDE Configuration</h2>
+          <p>Use these fallbacks when a client is not covered by the setup wizard or when you prefer direct configuration.</p>
+          <div class="doc-checklist">
+            <article>
+              <h3>VS Code</h3>
+              <p>Use the Claude Code or Cline settings, then restart VS Code so the extension reloads its provider config.</p>
+            </article>
+            <article>
+              <h3>Cursor</h3>
+              <p>Add a compatible model with base URL <code>https://unityai.cloud/v1</code> and model <code>unityai-cloud</code>.</p>
+            </article>
+            <article>
+              <h3>Windsurf</h3>
+              <p>Set the AI provider base URL to the Anthropic-compatible UnityAI endpoint.</p>
+            </article>
+          </div>
+          <div class="code-card">
+            <div class="code-title">Cline settings.json</div>
+            <pre><code>{
+  "cline.apiProvider": "anthropic",
+  "cline.anthropicBaseUrl": "https://unityai.cloud/v1",
+  "cline.apiKey": "YOUR_API_KEY"
+}</code></pre>
+          </div>
+          <div class="code-card">
+            <div class="code-title">Roo Code settings.json</div>
+            <pre><code>{
+  "roo-cline.apiProvider": "anthropic",
+  "roo-cline.anthropicBaseUrl": "https://unityai.cloud/v1",
+  "roo-cline.apiKey": "YOUR_API_KEY"
+}</code></pre>
+          </div>
+          <div class="code-card">
+            <div class="code-title">Generic OpenAI-Compatible Client</div>
+            <pre><code>OPENAI_API_KEY=YOUR_API_KEY
+OPENAI_BASE_URL=https://unityai.cloud/api/v1
+MODEL=unityai-cloud</code></pre>
+          </div>
+        </section>
+
         <section id="api-reference" class="doc-section">
           <h2>API Reference</h2>
-          <p>Proxy endpoints accept API key authentication through either an API-key header or a bearer token.</p>
+          <p>UnityAI accepts API keys through either a custom API-key header or a bearer token. Dashboard routes use session credentials.</p>
           <div class="api-list">
             <article>
               <span>POST</span>
               <code>/v1/messages</code>
-              <p>Create an Anthropic-compatible message request. Set <code>stream: true</code> for SSE streaming.</p>
+              <p>Create an Anthropic-compatible message request. Streaming is available through server-sent events.</p>
             </article>
             <article>
               <span>GET</span>
               <code>/v1/models</code>
-              <p>List the public model IDs available to your account.</p>
+              <p>Return Anthropic-compatible model records enabled for the current key.</p>
             </article>
             <article>
               <span>POST</span>
-              <code>/api/v1/chat/completions</code>
-              <p>Create an OpenAI-compatible chat completion with normalized output.</p>
+              <code>/v1/messages/count_tokens</code>
+              <p>Estimate message token usage without sending the request to an upstream model.</p>
+            </article>
+            <article>
+              <span>POST</span>
+              <code>/api/auth/login</code>
+              <p>Create a dashboard session for authenticated management views.</p>
             </article>
           </div>
           <div class="code-card">
-            <div class="code-title">Request Example</div>
+            <div class="code-title">Header Options</div>
+            <pre><code>x-api-key: YOUR_API_KEY
+# OR
+Authorization: Bearer YOUR_API_KEY</code></pre>
+          </div>
+        </section>
+
+        <section id="messages" class="doc-section">
+          <h2>Messages</h2>
+          <p>Send structured conversation turns to the Anthropic-compatible endpoint. Use <code>stream: true</code> when your client supports SSE output.</p>
+          <div class="code-card">
+            <div class="code-title">Request</div>
             <pre><code>{
   "model": "unityai-cloud",
   "max_tokens": 1024,
@@ -175,29 +323,107 @@ ANTHROPIC_MODEL=unityai-cloud</code></pre>
           </div>
         </section>
 
+        <section id="models-api" class="doc-section">
+          <h2>Models Endpoint</h2>
+          <p>Use the models endpoint to confirm the IDs available to your key before updating a client configuration.</p>
+          <div class="code-card">
+            <div class="code-title">Response</div>
+            <pre><code>{
+  "data": [
+    { "id": "unityai-cloud", "object": "model", "display_name": "UnityAI Cloud" },
+    { "id": "unityai-fast", "object": "model", "display_name": "UnityAI Fast" },
+    { "id": "unityai-reasoning", "object": "model", "display_name": "UnityAI Reasoning" },
+    { "id": "unityai-vision", "object": "model", "display_name": "UnityAI Vision" },
+    { "id": "claude-opus-4-8", "object": "model", "display_name": "Claude Opus 4.8" },
+    { "id": "gpt-5.5", "object": "model", "display_name": "GPT 5.5" },
+    { "id": "gemini-3.1-pro", "object": "model", "display_name": "Gemini 3.1 Pro" },
+    { "id": "deepseek-v4-pro", "object": "model", "display_name": "DeepSeek V4 Pro" },
+    { "id": "qwen-3.7-plus", "object": "model", "display_name": "Qwen 3.7 Plus" }
+  ]
+}</code></pre>
+          </div>
+        </section>
+
+        <section id="token-counting" class="doc-section">
+          <h2>Token Counting</h2>
+          <p>Count projected tokens for a request before it is routed to a provider.</p>
+          <div class="code-card">
+            <div class="code-title">Request</div>
+            <pre><code>{
+  "model": "unityai-cloud",
+  "messages": [
+    { "role": "user", "content": "How many tokens is this?" }
+  ]
+}</code></pre>
+          </div>
+        </section>
+
+        <section id="dashboard-auth" class="doc-section">
+          <h2>Dashboard Auth</h2>
+          <p>Dashboard sessions are created separately from API keys. Use this route for email-and-password sign-in flows.</p>
+          <div class="code-card">
+            <div class="code-title">Request</div>
+            <pre><code>{
+  "email": "YOUR_EMAIL",
+  "password": "YOUR_PASSWORD"
+}</code></pre>
+          </div>
+        </section>
+
         <section id="models" class="doc-section">
           <h2>Available Models</h2>
           <div class="model-table">
-            <div><strong>unityai-cloud</strong><span>Auto routing model for balanced production output.</span></div>
-            <div><strong>unityai-fast</strong><span>Fast model path for lightweight tasks and UI helpers.</span></div>
-            <div><strong>unityai-reasoning</strong><span>Deep analysis path for planning, code review, and decisions.</span></div>
+            <div><strong>unityai-cloud</strong><span>Primary auto-routing model for balanced speed, quality, and cost.</span></div>
+            <div><strong>unityai-fast</strong><span>Low-latency route for chat helpers, UI generation, and lightweight automation.</span></div>
+            <div><strong>unityai-reasoning</strong><span>Deeper analysis route for planning, code review, and multi-step decisions.</span></div>
             <div><strong>unityai-vision</strong><span>Image and document understanding path for visual workflows.</span></div>
+            <div><strong>claude-opus-4-8</strong><span>High-reasoning route for complex analysis and long-context tasks.</span></div>
+            <div><strong>gpt-5.5</strong><span>Advanced reasoning option for broad text, code, and agent work.</span></div>
+            <div><strong>gemini-3.1-pro</strong><span>Large-context model path with strong vision and multimodal support.</span></div>
+            <div><strong>deepseek-v4-pro</strong><span>Efficient mixture-of-experts route for code and structured reasoning.</span></div>
+            <div><strong>qwen-3.7-plus</strong><span>Long-context generation route with strong multilingual coverage.</span></div>
+          </div>
+        </section>
+
+        <section id="build-notes" class="doc-section">
+          <h2>Build Notes</h2>
+          <div class="doc-checklist">
+            <article>
+              <h3>Built-in search and vision</h3>
+              <p>UnityAI routes can support web-aware and image-aware workflows without requiring every client to install separate tool servers.</p>
+            </article>
+            <article>
+              <h3>One key, many clients</h3>
+              <p>The same customer key can be used across compatible IDEs and API clients, subject to your workspace policy.</p>
+            </article>
+            <article>
+              <h3>Restart after config changes</h3>
+              <p>Most desktop tools cache provider settings, so restart the client after changing base URLs or model IDs.</p>
+            </article>
           </div>
         </section>
 
         <section id="troubleshooting" class="doc-section">
           <h2>Troubleshooting</h2>
           <details open>
-            <summary>Client returns unauthorized</summary>
-            <p>Check that the API key is present and that the correct compatible endpoint is configured.</p>
+            <summary>Connection errors</summary>
+            <p>Confirm that the client is using <code>https://unityai.cloud</code> and that the selected compatible path matches the client type.</p>
           </details>
           <details>
-            <summary>Model is not found</summary>
-            <p>Use <code>/v1/models</code> or <code>/api/v1/models</code> to confirm the IDs enabled for the account.</p>
+            <summary>Model not found</summary>
+            <p>Use exact model IDs from the Available Models section. If in doubt, call the models endpoint for your account.</p>
           </details>
           <details>
-            <summary>Streaming does not display</summary>
-            <p>Confirm that your client supports server-sent events and that <code>stream</code> is set to true.</p>
+            <summary>Rate limited</summary>
+            <p>Your request window, RPM cap, or token budget may be exhausted. Wait for reset or move to a higher plan.</p>
+          </details>
+          <details>
+            <summary>Changes not applying</summary>
+            <p>Restart your IDE or client after editing provider configuration files.</p>
+          </details>
+          <details>
+            <summary>Cursor or Windsurf is not routing</summary>
+            <p>Make sure the Anthropic-compatible base URL ends with <code>/v1</code> and the model is set to <code>unityai-cloud</code>.</p>
           </details>
         </section>
       </article>
