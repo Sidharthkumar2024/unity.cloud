@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Documentation - unityai.cloud</title>
+    <meta
+      name="description"
+      content="Setup guide and API reference for connecting AI clients to unityai.cloud."
+    />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="subpage docs-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="index.html" aria-label="unityai.cloud home">
+          <span class="brand-mark" aria-hidden="true">u</span>
+          <span>unityai.cloud</span>
+        </a>
+
+        <nav class="desktop-nav" aria-label="Primary navigation">
+          <a href="index.html#features">Features</a>
+          <a href="pricing.html">Pricing</a>
+          <a class="active" href="documentation.html">Docs</a>
+          <a href="status.html">Status</a>
+          <a href="mailto:hello@unityai.cloud">Login</a>
+          <a class="nav-cta" href="mailto:hello@unityai.cloud">Get Access</a>
+        </nav>
+
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-button>
+          <span class="sr-only">Open menu</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+      </div>
+
+      <nav id="mobile-menu" class="mobile-nav" aria-label="Mobile navigation" data-mobile-menu>
+        <a href="index.html#features">Features</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="documentation.html">Docs</a>
+        <a href="status.html">Status</a>
+        <a href="mailto:hello@unityai.cloud">Login</a>
+        <a class="nav-cta" href="mailto:hello@unityai.cloud">Get Access</a>
+      </nav>
+    </header>
+
+    <main id="main-content" class="docs-layout">
+      <aside class="docs-sidebar" aria-label="Documentation sections">
+        <strong>unityai.cloud Docs</strong>
+        <nav>
+          <a href="#setup">Setup Guide</a>
+          <a href="#prerequisites">Prerequisites</a>
+          <a href="#quick-setup">Quick Setup</a>
+          <a href="#cli-tools">CLI Tools</a>
+          <a href="#api-reference">API Reference</a>
+          <a href="#models">Available Models</a>
+          <a href="#troubleshooting">Troubleshooting</a>
+        </nav>
+      </aside>
+
+      <article class="docs-content">
+        <p class="section-label">Documentation</p>
+        <h1 id="setup">Setup Guide</h1>
+        <p class="docs-lead">
+          Get unityai.cloud running inside your IDE, coding tool, or AI client with the real local
+          proxy URL, UnityAI model IDs, and compatible endpoints.
+        </p>
+
+        <div class="doc-tags" aria-label="Documentation highlights">
+          <span>Drop-in compatible</span>
+          <span>Per-key budgets</span>
+          <span>Proxy auth</span>
+          <span>UnityAI models</span>
+        </div>
+
+        <section id="prerequisites" class="doc-section">
+          <h2>Prerequisites</h2>
+          <div class="doc-checklist">
+            <article>
+              <h3>Node.js 18 or newer</h3>
+              <p>Required for running the setup wizard with npx.</p>
+            </article>
+            <article>
+              <h3>unityai.cloud API key</h3>
+              <p>Create or receive a customer API key before connecting a coding tool.</p>
+            </article>
+            <article>
+              <h3>Supported coding tool</h3>
+              <p>Use Codex, Claude Code, Cline, Kilo Code, OpenCode, VS Code, or a manual client.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="quick-setup" class="doc-section">
+          <h2>Quick Setup</h2>
+          <p>Run the UnityAI setup wizard, paste your API key, then choose the coding tool you want to configure.</p>
+          <div class="code-card">
+            <div class="code-title">Main Command</div>
+            <pre><code>npx -y @unityai/cloud-cli@latest</code></pre>
+          </div>
+          <div class="code-card">
+            <div class="code-title">Connection Values</div>
+            <pre><code>API origin: https://unityai.cloud
+Anthropic-compatible URL: https://unityai.cloud/v1
+OpenAI-compatible URL: https://unityai.cloud/api/v1
+API Key: YOUR_API_KEY
+Primary model: unityai-cloud
+Fast model: unityai-cloud</code></pre>
+          </div>
+        </section>
+
+        <section id="cli-tools" class="doc-section">
+          <h2>CLI Tools</h2>
+          <div class="doc-grid">
+            <article>
+              <h3>Codex CLI</h3>
+              <p>Use the OpenAI-compatible endpoint and set the model to <code>unityai-cloud</code>.</p>
+              <pre><code>OPENAI_API_KEY=YOUR_API_KEY
+OPENAI_BASE_URL=https://unityai.cloud/api/v1
+MODEL=unityai-cloud</code></pre>
+            </article>
+            <article>
+              <h3>Claude Code</h3>
+              <p>Use the Anthropic-compatible endpoint with the same API key.</p>
+              <pre><code>ANTHROPIC_AUTH_TOKEN=YOUR_API_KEY
+ANTHROPIC_BASE_URL=https://unityai.cloud/v1
+ANTHROPIC_MODEL=unityai-cloud</code></pre>
+            </article>
+            <article>
+              <h3>Cline or Roo Code</h3>
+              <p>Choose Anthropic-compatible mode and point the client to the UnityAI base URL.</p>
+              <pre><code>{
+  "apiProvider": "anthropic",
+  "anthropicBaseUrl": "https://unityai.cloud/v1",
+  "apiKey": "YOUR_API_KEY"
+}</code></pre>
+            </article>
+          </div>
+        </section>
+
+        <section id="api-reference" class="doc-section">
+          <h2>API Reference</h2>
+          <p>Proxy endpoints accept API key authentication through either an API-key header or a bearer token.</p>
+          <div class="api-list">
+            <article>
+              <span>POST</span>
+              <code>/v1/messages</code>
+              <p>Create an Anthropic-compatible message request. Set <code>stream: true</code> for SSE streaming.</p>
+            </article>
+            <article>
+              <span>GET</span>
+              <code>/v1/models</code>
+              <p>List the public model IDs available to your account.</p>
+            </article>
+            <article>
+              <span>POST</span>
+              <code>/api/v1/chat/completions</code>
+              <p>Create an OpenAI-compatible chat completion with normalized output.</p>
+            </article>
+          </div>
+          <div class="code-card">
+            <div class="code-title">Request Example</div>
+            <pre><code>{
+  "model": "unityai-cloud",
+  "max_tokens": 1024,
+  "messages": [
+    { "role": "user", "content": "Hello, UnityAI" }
+  ],
+  "stream": false
+}</code></pre>
+          </div>
+        </section>
+
+        <section id="models" class="doc-section">
+          <h2>Available Models</h2>
+          <div class="model-table">
+            <div><strong>unityai-cloud</strong><span>Auto routing model for balanced production output.</span></div>
+            <div><strong>unityai-fast</strong><span>Fast model path for lightweight tasks and UI helpers.</span></div>
+            <div><strong>unityai-reasoning</strong><span>Deep analysis path for planning, code review, and decisions.</span></div>
+            <div><strong>unityai-vision</strong><span>Image and document understanding path for visual workflows.</span></div>
+          </div>
+        </section>
+
+        <section id="troubleshooting" class="doc-section">
+          <h2>Troubleshooting</h2>
+          <details open>
+            <summary>Client returns unauthorized</summary>
+            <p>Check that the API key is present and that the correct compatible endpoint is configured.</p>
+          </details>
+          <details>
+            <summary>Model is not found</summary>
+            <p>Use <code>/v1/models</code> or <code>/api/v1/models</code> to confirm the IDs enabled for the account.</p>
+          </details>
+          <details>
+            <summary>Streaming does not display</summary>
+            <p>Confirm that your client supports server-sent events and that <code>stream</code> is set to true.</p>
+          </details>
+        </section>
+      </article>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
