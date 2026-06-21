@@ -1,0 +1,143 @@
+.score-tabs button {
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  padding: 6px 10px;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.score-tabs button:hover,
+.score-tabs button:focus-visible {
+  border-color: rgba(15, 23, 42, 0.38);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.score-tabs button:focus-visible {
+  outline: 2px solid rgba(14, 165, 233, 0.55);
+  outline-offset: 2px;
+}
+
+.score-tabs .active {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.site-footer {
+  overflow: hidden;
+}
+
+.footer-inner {
+  display: grid;
+  width: var(--container);
+  margin: 0 auto;
+  grid-template-columns: minmax(240px, 1.4fr) repeat(3, minmax(132px, 1fr));
+  gap: 32px;
+  padding: 42px 0 34px;
+  align-items: start;
+}
+
+.footer-brand {
+  display: grid;
+  gap: 14px;
+}
+
+.footer-brand p {
+  max-width: 330px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.footer-inner .footer-column {
+  display: grid;
+  gap: 10px;
+}
+
+.footer-column strong {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.footer-column a,
+.footer-bottom a {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  transition: color 160ms ease;
+}
+
+.footer-column a:hover,
+.footer-bottom a:hover {
+  color: var(--ink);
+}
+
+.footer-bottom {
+  display: flex;
+  width: var(--container);
+  margin: 0 auto;
+  padding: 18px 0 28px;
+  border-top: 1px solid #eef2f7;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.footer-bottom-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.activity-bars span {
+  transition: height 520ms ease;
+}
+
+.status-card strong,
+.usage-grid strong {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 1020px) {
+  .footer-inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 32px 0 28px;
+  }
+
+  .footer-brand {
+    grid-column: auto;
+  }
+
+  .footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-bottom: 24px;
+  }
+}
